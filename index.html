@@ -77,10 +77,10 @@
     /* ── Step animation ───────────────────────────────────────────── */
     .step {
       width: 100%;
-      animation: fadeUp 0.35s ease both;
+      animation: fadeUp 0.4s ease both;
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -95,9 +95,9 @@
       margin-bottom: 10px;
     }
     .step-title {
-      font-size: clamp(22px, 4vw, 30px);
+      font-size: clamp(24px, 4vw, 32px);
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.25;
       color: var(--primary);
       margin-bottom: 12px;
     }
@@ -119,7 +119,7 @@
     .option {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 18px;
       padding: 15px 20px;
       background: var(--card);
       border: 2px solid var(--border);
@@ -157,6 +157,47 @@
       transform: rotate(-45deg) translate(1px, -1px);
     }
 
+    /* ── Icon Grid Options (Visual Variation) ─────────────────────── */
+    .icon-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+    .icon-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      padding: 24px 16px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .icon-option svg {
+      width: 40px; height: 40px;
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 1.5;
+      transition: stroke 0.18s;
+    }
+    .icon-option:hover { border-color: var(--primary-light); background: #f0f7f4; }
+    .icon-option.selected { border-color: var(--primary); background: #eef7f3; color: var(--primary); font-weight: 700; box-shadow: 0 4px 14px rgba(44,74,62,0.08); }
+    .icon-option.selected svg { stroke: var(--primary); stroke-width: 2; }
+    
+    @media (max-width: 480px) {
+      .icon-options { grid-template-columns: 1fr; }
+      .icon-option { flex-direction: row; text-align: left; padding: 16px; justify-content: flex-start; }
+      .icon-option svg { width: 32px; height: 32px; }
+    }
+
     /* ── Insight card ─────────────────────────────────────────────── */
     .insight-card {
       background: var(--insight-bg);
@@ -189,7 +230,31 @@
       color: #374151;
     }
 
-    /* ── Bar chart ────────────────────────────────────────────────── */
+    /* ── Interstitial (The "Not Your Fault" Screen) ───────────────── */
+    .interstitial-card {
+      background: var(--card);
+      border: 2px solid var(--primary-light);
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+      margin-bottom: 32px;
+      box-shadow: 0 12px 32px rgba(44,74,62,0.08);
+    }
+    .interstitial-icon {
+      margin: 0 auto 20px;
+      width: 64px; height: 64px;
+      background: var(--insight-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .interstitial-title {
+      font-size: 26px; font-weight: 700; color: var(--primary); margin-bottom: 16px; line-height: 1.3;
+    }
+    .interstitial-body {
+      font-family: Arial, sans-serif; font-size: 15px; line-height: 1.7; color: #374151;
+    }
+
+    /* ── Bar chart (Static) ───────────────────────────────────────── */
     .bar-chart {
       margin-top: 22px;
       padding-top: 4px;
@@ -272,6 +337,7 @@
     }
     .btn-full { width: 100%; }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+    .btn-wrap-center { display: flex; justify-content: center; margin-top: 10px; }
 
     /* ── Welcome ──────────────────────────────────────────────────── */
     .welcome-badge {
@@ -341,7 +407,7 @@
       margin-top: 10px;
     }
 
-    /* ── Loading screen ───────────────────────────────────────────── */
+    /* ── Loading screen (Gamified) ────────────────────────────────── */
     .loading-step {
       text-align: center;
       display: flex;
@@ -366,11 +432,14 @@
     }
     .loading-sub {
       font-family: Arial, sans-serif;
-      font-size: 14px;
-      color: var(--muted);
+      font-size: 15px;
+      color: var(--primary);
+      font-weight: 600;
       margin-bottom: 38px;
       line-height: 1.6;
       max-width: 340px;
+      min-height: 48px; /* prevents layout shift */
+      transition: opacity 0.3s ease;
     }
     .loading-track {
       width: 100%;
@@ -385,6 +454,279 @@
       width: 0;
       background: linear-gradient(90deg, var(--primary), var(--accent));
       border-radius: 999px;
+    }
+
+    /* ── Dynamic input ────────────────────────────────────────────── */
+    .dynamic-input-wrap {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: rgba(44,74,62,0.07);
+      border-radius: 10px;
+    }
+    .dynamic-label {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .dynamic-slider {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+      height: 4px;
+    }
+    .compound-control .dynamic-slider {
+      width: 100%;
+      height: 4px;
+      margin: 8px 0 4px;
+      transform: none;
+      accent-color: var(--primary);
+      cursor: pointer;
+      display: block;
+    }
+    .slider-range {
+      display: flex;
+      justify-content: space-between;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Line chart (Compound Effect / Dynamics) ───────────────── */
+    .line-chart-wrapper {
+      margin-top: 22px;
+      padding-top: 24px;
+      border-top: 1px solid var(--insight-border);
+    }
+    .line-chart {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    
+    @media (max-width: 768px) {
+      .line-chart { grid-template-columns: 1fr; gap: 32px; }
+      .slider-range { display: none; } 
+      .compound-control { padding: 6px 10px; margin-bottom: 2px; }
+      .compound-control .dynamic-slider { margin: 4px 0 2px; }
+    }
+
+    .lc-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      margin-top: 24px;
+      justify-content: center;
+      grid-column: 1 / -1; 
+    }
+    .lc-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #374151;
+    }
+    .lc-swatch { width: 20px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    
+    .compound-compare {
+      padding: 16px;
+      border: 1px solid var(--insight-border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(248,245,240,0.95));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .compound-compare-head {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .compound-compare-delta {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), #fb923c);
+      padding: 8px 16px;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(249,115,22,0.22);
+      white-space: nowrap;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .target-revenue-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 2px dashed var(--accent);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      transition: bottom 0.7s cubic-bezier(0.34, 1.3, 0.64, 1);
+      pointer-events: none;
+    }
+    .target-revenue-label {
+      background: var(--card);
+      color: var(--accent);
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      margin-left: 8px;
+      transform: translateY(-50%);
+    }
+
+    .compound-bars {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 220px; 
+      position: relative;
+    }
+    .compound-bar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      height: 100%;
+      justify-content: flex-end;
+      z-index: 8;
+    }
+    .compound-bar-value {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    .compound-bar-shell {
+      width: 100%;
+      max-width: 50px;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+      border-bottom: 2px solid rgba(209,213,219,0.8);
+    }
+    .compound-baseline-marker {
+      position: absolute;
+      left: -15%;
+      right: -15%;
+      height: 0;
+      border-top: 2px dashed rgba(44,74,62,0.5);
+      z-index: 2;
+      pointer-events: none;
+      transition: bottom 0.7s cubic-bezier(0.34, 1.3, 0.64, 1);
+    }
+    .compound-bar {
+      width: 100%;
+      height: 2%; 
+      border-radius: 6px 6px 0 0;
+      transition: height 0.7s cubic-bezier(0.34, 1.3, 0.64, 1);
+    }
+    
+    .compound-bar.current { background: #d1d5db; }
+    .compound-bar.projected { background: linear-gradient(180deg, #fb923c, #ea580c); }
+    .compound-bar.bad { background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 0 15px rgba(239,68,68,0.3); }
+    
+    .compound-bar-label {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #374151;
+      margin-top: 10px;
+    }
+    .compound-bar-sub {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    
+    /* Annual Impact Card */
+    .annual-impact-card {
+      margin-top: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-radius: 14px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(5,150,105,0.25);
+    }
+    .annual-impact-label {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+    .annual-impact-value {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .annual-impact-sub {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .compound-controls { display: grid; gap: 8px; }
+    .compound-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    
+    .compound-control {
+      padding: 8px 10px 7px;
+      background: rgba(44,74,62,0.07);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 0;
+    }
+    .compound-control-head {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 2px;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .compound-name {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.02em;
+    }
+    .compound-value {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #374151;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .compound-note {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-top: 6px;
+      text-align: center;
     }
 
     /* ── Results ──────────────────────────────────────────────────── */
@@ -443,92 +785,6 @@
     .bar-opportunity  { background: #f97316; }
     .tier-critical    { background: #fee2e2; color: #991b1b; }
     .bar-critical     { background: #ef4444; }
-
-    /* ── CTA box ──────────────────────────────────────────────────── */
-    .cta-box {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      border-radius: 16px;
-      padding: 32px 28px;
-      text-align: center;
-      color: #fff;
-      margin-bottom: 28px;
-    }
-    .cta-box h3 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
-    .cta-box p  { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.65; opacity: 0.88; margin-bottom: 24px; }
-
-    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-    .retake-link {
-      display: inline;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      color: var(--muted);
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    /* ── Dynamic input ────────────────────────────────────────────── */
-    .dynamic-input-wrap {
-      margin-top: 18px;
-      padding: 14px 16px;
-      background: rgba(44,74,62,0.07);
-      border-radius: 10px;
-    }
-    .dynamic-label {
-      font-family: Arial, sans-serif;
-      font-size: 13px;
-      color: var(--primary);
-      display: block;
-      margin-bottom: 10px;
-    }
-    .dynamic-slider {
-      width: 100%;
-      accent-color: var(--primary);
-      cursor: pointer;
-      height: 4px;
-    }
-    .slider-range {
-      display: flex;
-      justify-content: space-between;
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* ── Line chart ───────────────────────────────────────────────── */
-    .line-chart {
-      margin-top: 22px;
-      padding-top: 4px;
-      border-top: 1px solid var(--insight-border);
-    }
-    .lc-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 18px;
-      margin-top: 12px;
-      justify-content: flex-start;
-    }
-    .lc-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      color: #374151;
-    }
-    .lc-swatch {
-      width: 20px;
-      height: 3px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 480px) {
-      #container { padding: 80px 16px 40px; }
-      .option { padding: 13px 15px; font-size: 14px; }
-      .pillar-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .bc-label { font-size: 8.5px; }
-    }
   </style>
 </head>
 <body>
@@ -546,45 +802,160 @@
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-//  STEPS
+//  GLOBAL ANIMATION HELPER & MATH
+// ─────────────────────────────────────────────────────────────────────────────
+const animatedValues = {};
+function animateValue(id, endValue, formatFn, duration = 600) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const startValue = animatedValues[id] || 0;
+  if (startValue === endValue) {
+      el.textContent = formatFn(endValue);
+      return;
+  }
+  let startTimestamp = null;
+  const step = (timestamp) => {
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    const easeOutQuart = 1 - Math.pow(1 - progress, 4); 
+    const current = startValue + (endValue - startValue) * easeOutQuart;
+    
+    el.textContent = formatFn(current);
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    } else {
+      el.textContent = formatFn(endValue);
+      animatedValues[id] = endValue;
+    }
+  };
+  window.requestAnimationFrame(step);
+}
+
+// Custom Revenue Math (Non-Linear for $10k to $300k scale)
+function sliderToRev(s) {
+  s = Number(s);
+  if (s <= 20) return 10 + (s * 1); // 0-20 -> 10k to 30k
+  if (s <= 80) return 30 + ((s - 20) * 2.8333); // 20-80 -> 30k to 200k
+  return 200 + ((s - 80) * 5); // 80-100 -> 200k to 300k
+}
+function revToSlider(r) {
+  r = Number(r);
+  if (r <= 30) return (r - 10) / 1;
+  if (r <= 200) return 20 + ((r - 30) / 2.8333);
+  return 80 + ((r - 200) / 5);
+}
+
+function sliderToSpend(s) {
+  s = Number(s);
+  if (s <= 15) return 100 + (s * 60);         
+  if (s <= 75) return 1000 + ((s - 15) * 50);  
+  return 4000 + ((s - 75) * 240);              
+}
+function spendToSlider(spend) {
+  const v = Math.max(100, Math.min(10000, Number(spend) || 1200));
+  if (v <= 1000) return Math.round((v - 100) / 60);
+  if (v <= 4000) return 15 + Math.round((v - 1000) / 50);
+  return 75 + Math.round((v - 4000) / 240);
+}
+function compactMoney(n) {
+  if (n >= 1000000) return `$${(n/1000000).toFixed(2)}M`;
+  if (n >= 1000) return `$${(n/1000).toFixed(1)}K`;
+  return `$${Math.round(n)}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STEPS (THE NOOM-STYLE FLOW)
 // ─────────────────────────────────────────────────────────────────────────────
 const STEPS = [
-  { type: 'welcome' },
+{ type: 'welcome' },
 
-  // ── Context (unscored) ────────────────────────────────────────────────────
+// ── Aspirational Hooks ────────────────────────────────────────────────────
   {
-    type: 'question', id: 'services',
-    label: 'Your Practice',
-    title: 'Which services do you currently offer?',
-    sub: 'Select all that apply.',
-    multi: true,
-    options: [
-      { text: 'Injectables (Botox, fillers, Sculptra)',         value: 'injectables' },
-      { text: 'Body contouring / fat reduction',                value: 'body' },
-      { text: 'Laser, skin resurfacing & light therapy',        value: 'laser' },
-      { text: 'Medical weight loss (GLP-1, Semaglutide)',       value: 'weightloss' },
-      { text: 'IV therapy / wellness infusions',                value: 'iv' },
-      { text: 'Hormone therapy / longevity medicine',           value: 'hormone' },
-    ],
+    type: 'question', id: 'current_revenue',
+    label: 'Baseline',
+    title: 'What is your current average monthly revenue?',
+    sub: 'Rough estimates are fine. This gives us a baseline to measure growth against.',
+    multi: false,
+    inputType: 'range-nonlinear-rev',
+    min: 0, max: 100, step: 1, defaultValue: 40, // 40 roughly equals $86k
+    prefix: '$', suffix: 'k / mo',
+    pillar: null, scored: false,
+  },
+  {
+    type: 'question', id: 'target_revenue',
+    label: 'The Goal',
+    title: 'Where do you want your monthly revenue to be 12 months from now?',
+    sub: 'Set your target. Later, we\'ll show you exactly how to close the gap.',
+    multi: false,
+    inputType: 'range-nonlinear-rev',
+    min: 0, max: 100, step: 1, defaultValue: 70, // 70 roughly equals $170k
+    prefix: '$', suffix: 'k / mo',
     pillar: null, scored: false,
   },
 
+// ── Identity & Context ────────────────────────────────────────────────────
+  {
+    type: 'question', id: 'business_age',
+    label: 'Your Practice',
+    title: 'How long has your MedSpa been operating?',
+    sub: 'This helps us benchmark your growth against practices in the same phase.',
+    multi: false,
+    options: [
+      { text: 'Just launching (Under 1 year)', value: 1 },
+      { text: 'Finding our rhythm (1 – 3 years)', value: 2 },
+      { text: 'Established (3 – 5 years)', value: 3 },
+      { text: 'Mature (5+ years)', value: 4 },
+    ],
+    pillar: null, scored: false,
+  },
+  {
+    type: 'question', id: 'team_size',
+    label: 'Your Practice',
+    title: 'How large is your provider team?',
+    sub: 'This helps us understand your operational capacity.',
+    multi: false,
+    options: [
+      { text: 'Solo provider', value: 1 },
+      { text: '2 – 3 providers', value: 2 },
+      { text: '4 – 6 providers', value: 3 },
+      { text: '7+ providers', value: 4 },
+    ],
+    pillar: null, scored: false,
+  },
+  {
+    type: 'question', id: 'services',
+    label: 'Your Practice',
+    title: 'Which services drive the majority of your revenue?',
+    sub: 'Select all that apply.',
+    multi: true,
+    visual: 'icons',
+    options: [
+      { text: 'Injectables', value: 'injectables', icon: '<path d="M12 2l10 10-4 4-10-10z M22 12l-4 4 M14 4l4 4 M8 16l-6 6 M6 18l4-4"/>' },
+      { text: 'Laser & Light', value: 'laser', icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2 M12 20v2 M2 12h2 M20 12h2 M4.9 4.9l1.4 1.4 M17.7 17.7l1.4 1.4 M4.9 19.1l1.4-1.4 M17.7 6.3l1.4-1.4"/>' },
+      { text: 'Body Contouring', value: 'body', icon: '<path d="M6 4c0 4 3 6 3 10s-3 6-3 10 M18 4c0 4-3 6-3 10s3 6 3 10"/>' },
+      { text: 'Weight Loss (GLP-1)', value: 'weightloss', icon: '<path d="M12 22a10 10 0 100-20 10 10 0 000 20z M12 6v6l4 2"/>' },
+    ],
+    pillar: null, scored: false,
+  },
   {
     type: 'question', id: 'monthly_leads',
     label: 'Lead Volume',
     title: 'How many new leads come in each month?',
     sub: 'Include form fills, DMs, calls, and walk-ins.',
     multi: false,
-    options: [
-      { text: 'Fewer than 25',  value: 1 },
-      { text: '25 – 75',        value: 2 },
-      { text: '75 – 150',       value: 3 },
-      { text: 'More than 150',  value: 4 },
-    ],
+    inputType: 'range',
+    min: 10, max: 300, step: 5, defaultValue: 50, suffix: ' leads/mo',
     pillar: null, scored: false,
   },
 
-  // ── Insight 1: 8–12% conversion benchmark ────────────────────────────────
+// ── Interstitial (Slowing Pacing) ─────────────────────────────────────────
+  {
+    type: 'interstitial',
+    title: 'Let\'s map out exactly where your revenue is leaking...',
+    body: 'Growth isn\'t just about buying more leads. It\'s about fixing the <strong>systems</strong> that let those leads slip through the cracks. <br><br>Let\'s diagnose your acquisition pipeline.',
+  },
+
+// ── Insight 1: Conversion ─────────────────────────────────────────────────
   {
     type: 'insight',
     eyebrow: 'Industry Benchmark',
@@ -601,21 +972,7 @@ const STEPS = [
     },
   },
 
-  // ── Acquisition ───────────────────────────────────────────────────────────
-  {
-    type: 'question', id: 'lead_to_consult',
-    label: 'Lead Conversion',
-    title: 'What percentage of your leads turn into booked consultations?',
-    sub: null, multi: false,
-    options: [
-      { text: 'Less than 10%',   value: 10 },
-      { text: '10% – 25%',       value: 35 },
-      { text: '25% – 50%',       value: 65 },
-      { text: 'More than 50%',   value: 100 },
-    ],
-    pillar: 'acquisition', scored: true,
-  },
-
+// ── Acquisition ───────────────────────────────────────────────────────────
   {
     type: 'question', id: 'response_time',
     label: 'Speed-to-Lead',
@@ -630,8 +987,6 @@ const STEPS = [
     ],
     pillar: 'acquisition', scored: true,
   },
-
-  // ── Insight 2: 21× speed-to-lead ─────────────────────────────────────────
   {
     type: 'insight',
     eyebrow: 'Response Speed Impact',
@@ -647,7 +1002,6 @@ const STEPS = [
       ],
     },
   },
-
   {
     type: 'question', id: 'followup',
     label: 'Follow-Up & Nurture',
@@ -662,8 +1016,6 @@ const STEPS = [
     ],
     pillar: 'acquisition', scored: true,
   },
-
-  // ── Insight 3: Nurture persistence — BAR CHART ────────────────────────────
   {
     type: 'insight',
     eyebrow: 'Lead Nurture Reality',
@@ -681,6 +1033,52 @@ const STEPS = [
     },
   },
 
+// ── Interstitial (The Release Valve) ──────────────────────────────────────
+  {
+    type: 'interstitial',
+    title: 'If you feel like you are buying leads but struggling to book them... you aren\'t alone.',
+    body: 'Most MedSpa front desk teams are hired for patient care and hospitality, not rapid sales follow-up. <br><br>The gaps in your conversion rates are almost always <strong>systems problems</strong>, not staff failures. And systems are easy to fix.',
+  },
+
+// ── Economics BEFORE The Leaked Lead Insights ─────────────────────────────
+  {
+    type: 'question', id: 'close_rate',
+    label: 'Revenue Economics',
+    title: 'What percentage of showed consultations become paying treatment clients?',
+    sub: 'Use the slider to choose your approximate close rate.',
+    multi: false,
+    inputType: 'range',
+    min: 5, max: 95, step: 5, defaultValue: 55, suffix: '%',
+    pillar: null, scored: false,
+  },
+  {
+    type: 'question', id: 'avg_expenditure',
+    label: 'Revenue Economics',
+    title: 'What is the average revenue from the initial treatment plan or first purchase?',
+    sub: 'Use the midpoint if you usually think in ranges.',
+    multi: false,
+    inputType: 'range-nonlinear-spend',
+    min: 0, max: 100, step: 1, defaultValue: 1500, prefix: '$',
+    pillar: null, scored: false,
+  },
+
+// ── Dynamic Insights: The Cost of a Leaked Lead ───────────────────────────
+  {
+    type: 'insight',
+    chartType: 'leaked_leads',
+    eyebrow: 'The Real Cost of Leaked Leads',
+    stat: '', // Dynamic
+    body: 'Based on your <strong>average client spend</strong> and <strong>close rate</strong>, every lead that drops out of your pipeline is burning actual dollars. See how much revenue you lose based on how many leads leak per month.',
+  },
+  {
+    type: 'insight',
+    chartType: 'cpl_math',
+    eyebrow: 'The Acquisition Math',
+    stat: '', // Dynamic
+    body: 'If you assume an industry standard of $150 to acquire a lead, your <strong>conversion rate</strong> is what dictates your actual cost. See how fixing your systems dramatically lowers the cost of acquiring a booked consult.',
+  },
+
+// ── Retention ─────────────────────────────────────────────────────────────
   {
     type: 'question', id: 'noshow_rate',
     label: 'Appointment Integrity',
@@ -694,24 +1092,6 @@ const STEPS = [
     ],
     pillar: 'acquisition', scored: true,
   },
-
-  // ── Insight 4: $200 no-show cost ──────────────────────────────────────────
-  {
-    type: 'insight',
-    eyebrow: 'The Cost of No-Shows',
-    stat: '$200',
-    body: 'A single missed appointment costs around <strong>$200 on average</strong> in lost revenue and overhead. Automated reminder systems can cut no-show rates from 21% down to 7% — a difference that adds up to tens of thousands per year.',
-    chart: {
-      title: 'Annual revenue lost to no-shows — 50 appointments/month at $200 avg',
-      bars: [
-        { label: '5% no-show',  pct: 14,  val: '$6K/yr',  color: '#eab308' },
-        { label: '15% no-show', pct: 43,  val: '$18K/yr', color: '#f97316' },
-        { label: '25% no-show', pct: 71,  val: '$30K/yr', color: '#ef4444' },
-        { label: '35% no-show', pct: 100, val: '$42K/yr', color: '#991b1b', highlight: true },
-      ],
-    },
-  },
-
   {
     type: 'question', id: 'reminders',
     label: 'Reminder Systems',
@@ -725,105 +1105,36 @@ const STEPS = [
     ],
     pillar: 'acquisition', scored: true,
   },
-
-  // ── Insight 5: True cost of a leaked lead — DYNAMIC BAR CHART ───────────
   {
     type: 'insight',
-    dynamic: true,
-    eyebrow: 'The True Cost of a Leaked Lead',
-    stat: '$4,000',
-    body: 'At <strong>$200 per paid lead</strong> and a 5% conversion rate, you\'re effectively paying $4,000 for every booked consultation. Use the slider below to enter your actual cost per lead and see what it\'s really costing you.',
+    eyebrow: 'The Cost of No-Shows',
+    stat: 'Massive',
+    body: 'A single missed appointment costs you roughly <strong>$[VAL]</strong> in lost revenue based on your average treatment value. Automated reminder systems can cut no-show rates from 21% down to 7%.',
     chart: {
-      title: 'Effective cost per booked consult — adjust your cost per lead',
+      title: 'Annual revenue lost to no-shows — 50 appointments/month at your avg value',
       bars: [
-        { label: '5% conv.',  color: '#ef4444' },
-        { label: '10% conv.', color: '#f97316' },
-        { label: '20% conv.', color: '#eab308' },
-        { label: '40% conv.', color: '#22c55e' },
+        { label: '5% no-show',  pct: 14,  val: 'Low',  color: '#eab308' },
+        { label: '15% no-show', pct: 43,  val: 'Med', color: '#f97316' },
+        { label: '25% no-show', pct: 71,  val: 'High', color: '#ef4444' },
+        { label: '35% no-show', pct: 100, val: 'Critical', color: '#991b1b', highlight: true },
       ],
     },
   },
-
-  // ── Marketing & trust ─────────────────────────────────────────────────────
   {
-    type: 'question', id: 'online_presence',
-    label: 'Marketing & Trust',
-    title: 'How would you describe your online presence and trust signals?',
-    sub: 'Reviews, before/afters, social content, website quality.',
+    type: 'interstitial',
+    title: 'Acquisition is only half the equation.',
+    body: 'Getting a patient in the door is expensive. Keeping them coming back is where <strong>compounding growth</strong> actually happens. Let\'s look at your retention.',
+  },
+  {
+    type: 'question', id: 'avg_visits_per_client',
+    label: 'Retention & LTV',
+    title: 'On average, how many times does a client come in for treatment?',
+    sub: 'This lets us calculate lifetime value instead of guessing it separately.',
     multi: false,
-    options: [
-      { text: 'Strong — 100+ reviews, consistent content, clear differentiation', value: 100 },
-      { text: 'Decent — some reviews and posts, but inconsistent',                value: 65 },
-      { text: 'Weak — minimal reviews, sparse content',                           value: 32 },
-      { text: 'We rely almost entirely on word-of-mouth',                         value: 15 },
-    ],
-    pillar: 'marketing', scored: true,
+    inputType: 'range',
+    min: 1, max: 12, step: 1, defaultValue: 3, suffix: ' visits',
+    pillar: null, scored: false,
   },
-
-  {
-    type: 'question', id: 'high_ticket_marketing',
-    label: 'Marketing & Trust',
-    title: 'How do you currently market your high-ticket services?',
-    sub: 'Think about your highest-value treatments — $1,000 and up.',
-    multi: false,
-    options: [
-      { text: 'Paid ads with dedicated landing pages and conversion tracking', value: 100 },
-      { text: 'Organic social content focused on specific services',           value: 65 },
-      { text: 'Email marketing to existing and past clients',                  value: 60 },
-      { text: 'Mostly referrals and word of mouth',                            value: 32 },
-      { text: 'We don\'t actively market specific services',                  value: 10 },
-    ],
-    pillar: 'marketing', scored: true,
-  },
-
-  {
-    type: 'question', id: 'positioning',
-    label: 'Marketing & Trust',
-    title: 'How clearly do you differentiate your practice from competitors?',
-    sub: 'Would a new patient immediately understand why to choose you over the medspa down the street?',
-    multi: false,
-    options: [
-      { text: 'Very clearly — our USP is specific and consistent across all channels',  value: 100 },
-      { text: 'Somewhat — we have a direction but it\'s not fully built out',           value: 60 },
-      { text: 'Not really — we mostly list services like everyone else',                value: 25 },
-      { text: 'We haven\'t thought much about differentiation',                        value: 10 },
-    ],
-    pillar: 'marketing', scored: true,
-  },
-
-  // ── Retention & LTV ───────────────────────────────────────────────────────
-  {
-    type: 'question', id: 'client_ltv',
-    label: 'Client Lifetime Value',
-    title: 'What\'s the average total lifetime spend per client?',
-    sub: 'Estimate total revenue per client across all visits over their relationship with you.',
-    multi: false,
-    options: [
-      { text: 'Under $500',      value: 15 },
-      { text: '$500 – $1,500',   value: 40 },
-      { text: '$1,500 – $5,000', value: 70 },
-      { text: '$5,000+',         value: 100 },
-    ],
-    pillar: 'retention', scored: true,
-  },
-
-  // ── Insight 6: LTV revenue multiplier — BAR CHART ────────────────────────
-  {
-    type: 'insight',
-    eyebrow: 'The LTV Revenue Multiplier',
-    stat: '8×',
-    body: 'Two practices. Both with <strong>200 active clients.</strong> The difference between a $500 average lifetime value and a $4,000 LTV is the difference between a $100K revenue line and an $800K one — without a single additional new lead.',
-    chart: {
-      title: 'Projected annual revenue — same 200 active clients',
-      bars: [
-        { label: '$500 LTV',   pct: 12.5, val: '$100K', color: '#ef4444' },
-        { label: '$1,200 LTV', pct: 30,   val: '$240K', color: '#f97316' },
-        { label: '$2,500 LTV', pct: 62.5, val: '$500K', color: '#eab308' },
-        { label: '$4,000 LTV', pct: 100,  val: '$800K', color: '#22c55e', highlight: true },
-      ],
-    },
-  },
-
   {
     type: 'question', id: 'loyalty',
     label: 'Retention & LTV',
@@ -837,7 +1148,6 @@ const STEPS = [
     ],
     pillar: 'retention', scored: true,
   },
-
   {
     type: 'question', id: 'reactivation',
     label: 'Retention & LTV',
@@ -853,57 +1163,37 @@ const STEPS = [
     pillar: 'retention', scored: true,
   },
 
-  // ── Insight 7: Compound growth line chart ────────────────────────────────
+// ── Insight 7: Compound growth line chart ────────────────────────────────
   {
     type: 'insight',
+    chartType: 'compound',
     eyebrow: 'The Compound Effect',
-    stat: '400%',
-    body: 'The chart below is built from <strong>your answers.</strong> Each lever — lead volume, conversion rate, average treatment value, and retention — multiplies against the others. Improve each one by 50% over 12 months and your revenue doesn\'t grow by 50%. It grows by <strong>400%.</strong> That\'s not arithmetic. That\'s compounding.',
-    lineChart: {
-      title: 'Your projected monthly revenue — 12-month improvement scenarios',
-    },
+    stat: '',
+    body: 'The chart below is built from <strong>your exact answers.</strong> Adjust your acquisition and retention systems to see how quickly you can close the gap to your target revenue.',
   },
 
-  // ── Pain point ────────────────────────────────────────────────────────────
+// ── The Enemy / Bottleneck ────────────────────────────────────────────────
   {
     type: 'question', id: 'bottleneck',
     label: 'Your Biggest Challenge',
     title: 'Where do you feel the most pain in your business right now?',
     sub: 'Be honest — your answer personalises your recommendations.',
     multi: false,
+    visual: 'icons',
     options: [
-      { text: 'Getting more leads and visibility',                 value: 'marketing' },
-      { text: 'Converting leads into booked consultations',        value: 'acquisition' },
-      { text: 'Getting clients to return and spend more',          value: 'retention' },
-      { text: 'All three feel like a problem',                     value: 'all' },
+      { text: 'Getting more leads', value: 'marketing', icon: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>' },
+      { text: 'Booking the leads we have', value: 'acquisition', icon: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>' },
+      { text: 'Getting clients to return', value: 'retention', icon: '<path d="M21 2v6h-6"/><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/>' },
+      { text: 'All three are a problem', value: 'all', icon: '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' },
     ],
     pillar: null, scored: false,
   },
 
-  { type: 'email_gate' },
-
-  // ── Loading screens ───────────────────────────────────────────────────────
-  {
-    type: 'loading',
-    icon: 'bars',
-    title: 'Compiling your scores against industry standards',
-    sub: 'Benchmarking your responses across 6,000+ medspa practices…',
-    duration: 2800,
-  },
-  {
-    type: 'loading',
-    icon: 'scan',
-    title: 'Finding your gaps',
-    sub: 'Identifying the highest-impact opportunities for your practice…',
-    duration: 2400,
-  },
-
-  { type: 'results' },
+{ type: 'email_gate' },
+{ type: 'loading', duration: 8500 },
+{ type: 'results' }
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────────────────────────────────────────
 const state = { step: 0, answers: {}, firstName: '', email: '' };
 
 const QUESTION_STEPS = STEPS.filter(s => s.type === 'question');
@@ -911,9 +1201,6 @@ const SCORED_STEPS   = QUESTION_STEPS.filter(s => s.scored);
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  SCORING
-//  Raw option values (0–100) are passed through a power curve before averaging.
-//  Exponent > 1 makes the curve convex: easy to score low, hard to score high.
-//  e.g. raw 65 → ~46, raw 50 → ~29, raw 35 → ~15, raw 10 → ~2
 // ─────────────────────────────────────────────────────────────────────────────
 const SCORE_EXPONENT = 1.8;
 
@@ -991,7 +1278,7 @@ const ctaByBottleneck = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  PROGRESS
+//  RENDER
 // ─────────────────────────────────────────────────────────────────────────────
 function updateProgress() {
   const s = STEPS[state.step];
@@ -1005,19 +1292,17 @@ function updateProgress() {
   document.getElementById('progressLabel').textContent = `${passed} of ${total}`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  RENDER
-// ─────────────────────────────────────────────────────────────────────────────
 function render() {
   updateProgress();
   const s = STEPS[state.step];
   const map = {
-    welcome:    renderWelcome,
-    question:   () => renderQuestion(s),
-    insight:    () => renderInsight(s),
-    email_gate: renderEmailGate,
-    loading:    () => renderLoading(s),
-    results:    renderResults,
+    welcome:      renderWelcome,
+    question:     () => renderQuestion(s),
+    insight:      () => renderInsight(s),
+    interstitial: () => renderInterstitial(s),
+    email_gate:   renderEmailGate,
+    loading:      () => renderLoading(s),
+    results:      renderResults,
   };
   document.getElementById('app').innerHTML = (map[s.type]||(() => ''))();
   bindEvents();
@@ -1034,28 +1319,108 @@ function renderWelcome() {
         not because of bad services, but because of broken systems.
         This assessment pinpoints exactly where your revenue is leaking and what to fix first.
       </p>
-      <div class="welcome-meta">
-        <div class="meta-item"><span class="meta-dot"></span>3 minutes to complete</div>
-        <div class="meta-item"><span class="meta-dot"></span>Personalised Growth Score</div>
-        <div class="meta-item"><span class="meta-dot"></span>No fluff — just gaps</div>
+      <button class="btn btn-accent btn-full" onclick="advance(this)">Start My Assessment &rarr;</button>
+    </div>`;
+}
+
+function renderInterstitial(s) {
+  return `
+    <div class="step">
+      <div class="interstitial-card">
+        <div class="interstitial-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h2 class="interstitial-title">${s.title}</h2>
+        <p class="interstitial-body">${s.body}</p>
       </div>
-      <button class="btn btn-accent btn-full" onclick="advance()">Start My Assessment &rarr;</button>
+      <button class="btn btn-primary btn-full" onclick="advance(this)">Continue &rarr;</button>
     </div>`;
 }
 
 function renderQuestion(s) {
   const saved = state.answers[s.id];
+
+  if (s.inputType && s.inputType.startsWith('range')) {
+    const fallback = s.defaultValue !== undefined ? s.defaultValue : (s.min ?? 0);
+    const rawValue = saved !== undefined && saved !== null && saved !== '' ? Number(saved) : fallback;
+    
+    let sliderValue = rawValue;
+    if (s.inputType === 'range-nonlinear-spend') sliderValue = spendToSlider(rawValue);
+    if (s.inputType === 'range-nonlinear-rev') sliderValue = revToSlider(rawValue);
+    
+    const hasValue = rawValue !== undefined && rawValue !== null && rawValue !== '';
+    
+    const formatSliderValue = value => {
+      const displayNum = Number(value);
+      if (s.inputType === 'range-nonlinear-rev') return `${s.prefix}${Math.round(displayNum).toLocaleString()}k`;
+      if (s.id === 'avg_visits_per_client') return `${displayNum} ${displayNum === 1 ? 'visit' : 'visits'}`;
+      if (s.prefix) return `${s.prefix}${displayNum.toLocaleString()}`;
+      if (s.suffix) return `${displayNum}${s.suffix}`;
+      return String(displayNum);
+    };
+
+    return `<div class="step">
+      ${s.label?`<div class="step-label">${s.label}</div>`:''}
+      <h2 class="step-title">${s.title}</h2>
+      ${s.sub?`<p class="step-sub">${s.sub}</p>`:''}
+      <div class="dynamic-input-wrap">
+        <label class="dynamic-label">Selected value: <strong id="questionSliderValue">${formatSliderValue(rawValue)}</strong></label>
+        <input
+          type="range"
+          class="dynamic-slider"
+          id="questionSlider"
+          min="${s.min ?? ''}"
+          max="${s.max ?? ''}"
+          step="${s.step ?? 1}"
+          value="${sliderValue}"
+          data-question-id="${s.id}"
+          data-input-type="${s.inputType || ''}"
+          data-min="${s.min ?? ''}"
+          data-max="${s.max ?? ''}"
+          data-prefix="${(s.prefix || '').replace(/\"/g, '&quot;')}"
+          data-suffix="${(s.suffix || '').replace(/\"/g, '&quot;')}"
+          oninput="handleRangeInputFromElement(this)"
+        />
+        <div class="slider-range">
+          <span>${s.inputType === 'range-nonlinear-spend' ? '$100' : (s.inputType === 'range-nonlinear-rev' ? '$10k' : formatSliderValue(s.min ?? rawValue))}</span>
+          <span>${s.inputType === 'range-nonlinear-spend' ? '$10,000' : (s.inputType === 'range-nonlinear-rev' ? '$300k+' : formatSliderValue(s.max ?? rawValue))}</span>
+        </div>
+      </div>
+      <button class="btn btn-accent btn-full" id="continueBtn"
+        ${!hasValue ? 'disabled' : ''} onclick="advance(this)">
+        Continue &rarr;
+      </button>
+    </div>`;
+  }
+
+  // Icon Grid Layout vs Standard List Layout
+  if (s.visual === 'icons') {
+    const opts = s.options.map(o => {
+      const sel = s.multi ? (Array.isArray(saved) && saved.includes(o.value)) : saved === o.value;
+      return `<div class="icon-option${sel?' selected':''}" data-value="${o.value}">
+                <svg viewBox="0 0 24 24">${o.icon}</svg>
+                <span>${o.text}</span>
+              </div>`;
+    }).join('');
+    const footer = s.multi ? `<button class="btn btn-accent btn-full" id="continueBtn" ${(!saved||saved.length===0)?'disabled':''} onclick="advance(this)">Continue &rarr;</button>` : '';
+    return `<div class="step">
+      ${s.label?`<div class="step-label">${s.label}</div>`:''}
+      <h2 class="step-title">${s.title}</h2>
+      ${s.sub?`<p class="step-sub">${s.sub}</p>`:''}
+      <div class="icon-options" id="options">${opts}</div>
+      ${footer}</div>`;
+  }
+
+  // Standard Text Buttons
   const opts = s.options.map(o => {
-    const sel = s.multi
-      ? (Array.isArray(saved) && saved.includes(o.value))
-      : saved === o.value;
+    const sel = s.multi ? (Array.isArray(saved) && saved.includes(o.value)) : saved === o.value;
     return `<button class="option${s.multi?' multi':''}${sel?' selected':''}" data-value="${o.value}">
-      <span class="option-check"></span>${o.text}</button>`;
+              <span class="option-check"></span><span>${o.text}</span>
+            </button>`;
   }).join('');
-  const footer = s.multi
-    ? `<button class="btn btn-primary btn-full" id="continueBtn"
-         ${(!saved||saved.length===0)?'disabled':''} onclick="advance()">Continue &rarr;</button>`
-    : '';
+  const footer = s.multi ? `<button class="btn btn-accent btn-full" id="continueBtn" ${(!saved||saved.length===0)?'disabled':''} onclick="advance(this)">Continue &rarr;</button>` : '';
   return `<div class="step">
     ${s.label?`<div class="step-label">${s.label}</div>`:''}
     <h2 class="step-title">${s.title}</h2>
@@ -1065,157 +1430,330 @@ function renderQuestion(s) {
 }
 
 function renderInsight(s) {
-  if (s.dynamic)    return renderDynamicChart(s);
-  const chartHtml   = s.chart     ? renderBarChart(s.chart)     : '';
-  const lineHtml    = s.lineChart ? renderLineChart(s.lineChart) : '';
+  if (s.chartType === 'leaked_leads') return renderLeakedLeadChart(s);
+  if (s.chartType === 'cpl_math') return renderCPLChart(s);
+  if (s.chartType === 'compound') return renderCompoundChart(s);
+  
+  // Replace dynamic tokens in body
+  let parsedBody = s.body;
+  if (parsedBody && parsedBody.includes('[VAL]')) {
+      const avg = state.answers.avg_expenditure || 1500;
+      parsedBody = parsedBody.replace('[VAL]', avg.toLocaleString());
+  }
+  
+  const chartHtml = s.chart ? renderBarChart(s.chart) : '';
   return `<div class="step">
     <div class="insight-card">
       <div class="insight-eyebrow">${s.eyebrow}</div>
-      <div class="insight-stat">${s.stat}</div>
-      <p class="insight-body">${s.body}</p>
+      <div class="insight-stat ${!s.stat ? 'is-empty' : ''}">${s.stat || ''}</div>
+      <p class="insight-body">${parsedBody}</p>
       ${chartHtml}
-      ${lineHtml}
     </div>
-    <button class="btn btn-primary btn-full" onclick="advance()">Continue &rarr;</button>
+    <button class="btn btn-primary btn-full" onclick="advance(this)">Continue &rarr;</button>
   </div>`;
 }
 
-function renderDynamicBarChart(chart) {
-  const bars = chart.bars.map((b, i) => `
-    <div class="bc-col" data-dynamic="1" style="animation-delay:${i*0.08}s">
-      <div class="bc-val" style="color:${b.color}">—</div>
-      <div class="bc-spacer"></div>
-      <div class="bc-fill" style="background:${b.color}"></div>
-      <div class="bc-label">${b.label}</div>
-    </div>`).join('');
-  return `<div class="bar-chart">
-    <div class="bc-title">${chart.title}</div>
-    <div class="bc-body">${bars}</div>
-  </div>`;
-}
-
-function renderDynamicChart(s) {
-  const chartHtml = renderDynamicBarChart(s.chart);
-  return `<div class="step">
-    <div class="insight-card">
-      <div class="insight-eyebrow">${s.eyebrow}</div>
-      <div class="insight-stat" id="dynStat">${s.stat}</div>
-      <p class="insight-body">${s.body}</p>
-      <div class="dynamic-input-wrap">
-        <label class="dynamic-label">Your cost per lead: <strong>$<span id="cplDisplay">200</span></strong></label>
-        <input type="range" class="dynamic-slider" id="cplSlider"
-          min="50" max="500" step="10" value="200"
-          oninput="updateDynChart(this.value)"/>
-        <div class="slider-range"><span>$50 / lead</span><span>$500 / lead</span></div>
+// ── NEW: Real Cost of Leaked Leads Chart ──────────────────────────────────────
+function renderLeakedLeadChart(s) {
+  return `
+    <div class="step">
+      <div class="line-chart-wrapper" style="border-top: none; margin-top: 0; padding-top: 0;">
+        <div class="line-chart">
+          <div class="insight-left" style="background: var(--insight-bg); border: 1px solid var(--insight-border); border-left: 4px solid var(--primary); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="insight-eyebrow">${s.eyebrow}</div>
+              <div class="insight-stat" id="llStat">$0</div>
+              <p class="insight-body">${s.body}</p>
+            </div>
+            <div class="dynamic-input-wrap" style="margin-top: 24px; background: rgba(44,74,62,0.04);">
+              <label class="dynamic-label">Leaked Leads per month: <strong id="llDisplay">30</strong></label>
+              <input type="range" class="dynamic-slider" id="llSlider" min="5" max="100" step="5" value="30" oninput="updateLeakedLeadChart(this.value)"/>
+              <div class="slider-range"><span>5</span><span>100</span></div>
+            </div>
+          </div>
+          <div class="compound-compare" style="background: #fff;">
+            <div class="compound-compare-head">
+              <div class="compound-compare-delta" style="background: #fee2e2; color: #991b1b; box-shadow: none;">Cumulative Revenue Burned</div>
+            </div>
+            <div class="compound-bars">
+              <div class="compound-bar-col" style="width: 30%;">
+                <div class="compound-bar-value" id="llVal0" style="color: #ef4444">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #ef4444;">
+                  <div class="compound-bar bad" id="llBar0" style="border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">1 Month</div>
+              </div>
+              <div class="compound-bar-col" style="width: 30%;">
+                <div class="compound-bar-value" id="llVal1" style="color: #ef4444">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #ef4444;">
+                  <div class="compound-bar bad" id="llBar1" style="border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">6 Months</div>
+              </div>
+              <div class="compound-bar-col" style="width: 30%;">
+                <div class="compound-bar-value" id="llVal2" style="color: #ef4444">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #ef4444;">
+                  <div class="compound-bar bad" id="llBar2" style="border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">1 Year</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      ${chartHtml}
+      <button class="btn btn-primary btn-full" style="margin-top: 24px;" onclick="advance(this)">Continue &rarr;</button>
     </div>
-    <button class="btn btn-primary btn-full" onclick="advance()">Continue &rarr;</button>
-  </div>`;
+  `;
 }
 
-function updateDynChart(cpl) {
-  cpl = Number(cpl);
-  document.getElementById('cplDisplay').textContent = cpl;
-  const convRates = [0.05, 0.10, 0.20, 0.40];
-  const costs     = convRates.map(r => Math.round(cpl / r));
-  const maxCost   = costs[0];
-  const MAX_H     = 88;
-  document.getElementById('dynStat').textContent = '$' + costs[0].toLocaleString();
-  document.querySelectorAll('[data-dynamic="1"]').forEach((col, i) => {
-    const h = Math.round(MAX_H * costs[i] / maxCost);
-    col.querySelector('.bc-fill').style.height = h + 'px';
-    const valEl = col.querySelector('.bc-val');
-    valEl.textContent = '$' + costs[i].toLocaleString();
-    valEl.style.opacity = '1';
+function updateLeakedLeadChart(leakedLeads) {
+  leakedLeads = Number(leakedLeads);
+  document.getElementById('llDisplay').textContent = leakedLeads;
+  
+  const avgSpend = state.answers.avg_expenditure || 1500;
+  const closeRate = (state.answers.close_rate || 50) / 100;
+  
+  // Value of a single lead based on their actual inputs
+  const valuePerLead = avgSpend * closeRate;
+  
+  const loss1Mo = leakedLeads * valuePerLead;
+  const loss6Mo = loss1Mo * 6;
+  const loss12Mo = loss1Mo * 12;
+  
+  animateValue('llStat', loss1Mo, v => compactMoney(v) + ' / mo');
+  
+  const maxLoss = Math.max(loss12Mo, 1000); // 12 month is always largest
+  
+  const pct1 = Math.max(2, (loss1Mo / maxLoss) * 100);
+  const pct6 = Math.max(2, (loss6Mo / maxLoss) * 100);
+  const pct12 = Math.max(2, (loss12Mo / maxLoss) * 100);
+  
+  document.getElementById('llBar0').style.height = `${pct1}%`;
+  document.getElementById('llBar1').style.height = `${pct6}%`;
+  document.getElementById('llBar2').style.height = `${pct12}%`;
+  
+  animateValue('llVal0', loss1Mo, compactMoney);
+  animateValue('llVal1', loss6Mo, compactMoney);
+  animateValue('llVal2', loss12Mo, compactMoney);
+}
+
+// ── NEW: Cost Per Lead Math Chart (Twisted) ──────────────────────────────────
+function renderCPLChart(s) {
+  return `
+    <div class="step">
+      <div class="line-chart-wrapper" style="border-top: none; margin-top: 0; padding-top: 0;">
+        <div class="line-chart">
+          <div class="insight-left" style="background: var(--insight-bg); border: 1px solid var(--insight-border); border-left: 4px solid var(--primary); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="insight-eyebrow">${s.eyebrow}</div>
+              <div class="insight-stat" id="cplStat">$0</div>
+              <p class="insight-body">${s.body}</p>
+            </div>
+            <div class="dynamic-input-wrap" style="margin-top: 24px; background: rgba(44,74,62,0.04);">
+              <label class="dynamic-label">Your Conversion Rate: <strong id="cplDisplay">10%</strong></label>
+              <input type="range" class="dynamic-slider" id="cplSlider" min="2" max="40" step="2" value="10" oninput="updateCPLChart(this.value)"/>
+              <div class="slider-range"><span>2%</span><span>40%</span></div>
+            </div>
+          </div>
+          <div class="compound-compare" style="background: #fff;">
+            <div class="compound-compare-head">
+              <div class="compound-compare-delta" style="background: #fee2e2; color: #991b1b; box-shadow: none;">Effective Cost to Acquire a Consult</div>
+            </div>
+            <div class="compound-bars">
+              <div class="compound-bar-col" style="width: 22%;">
+                <div class="compound-bar-value" id="cplVal0" style="color: #ef4444">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #ef4444;">
+                  <div class="compound-bar bad" id="cplBar0" style="border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">5% Conv.</div>
+              </div>
+              <div class="compound-bar-col" style="width: 22%;">
+                <div class="compound-bar-value" id="cplVal1" style="color: #f97316">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #f97316;">
+                  <div class="compound-bar" id="cplBar1" style="background: #f97316; border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">10% Conv.</div>
+              </div>
+              <div class="compound-bar-col" style="width: 22%;">
+                <div class="compound-bar-value" id="cplVal2" style="color: #eab308">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #eab308;">
+                  <div class="compound-bar" id="cplBar2" style="background: #eab308; border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">20% Conv.</div>
+              </div>
+              <div class="compound-bar-col" style="width: 22%;">
+                <div class="compound-bar-value" id="cplVal3" style="color: var(--primary)">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid var(--primary);">
+                  <div class="compound-bar" id="cplBar3" style="background: linear-gradient(180deg, #34d399, #059669); border-radius: 6px 6px 0 0; box-shadow: 0 0 15px rgba(5,150,105,0.3);"></div>
+                </div>
+                <div class="compound-bar-label" style="color: var(--primary)">Your Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" style="margin-top: 24px;" onclick="advance(this)">Continue &rarr;</button>
+    </div>
+  `;
+}
+
+function updateCPLChart(convRate) {
+  convRate = Number(convRate);
+  document.getElementById('cplDisplay').textContent = convRate + '%';
+  
+  const baseCPL = 150; // Industry assumption for math
+  const costs = [
+    Math.round(baseCPL / 0.05), // 5%
+    Math.round(baseCPL / 0.10), // 10%
+    Math.round(baseCPL / 0.20), // 20%
+    Math.round(baseCPL / (convRate / 100)) // Users rate
+  ];
+  
+  const maxCost = Math.max(...costs); 
+  
+  animateValue('cplStat', costs[3], v => '$' + Math.round(v).toLocaleString());
+  
+  costs.forEach((cost, i) => {
+    const pct = Math.max(2, (cost / maxCost) * 100);
+    document.getElementById(`cplBar${i}`).style.height = `${pct}%`;
+    animateValue(`cplVal${i}`, cost, v => '$' + Math.round(v).toLocaleString());
   });
 }
 
-function renderLineChart(chart) {
-  // ── Pull user answers and estimate baseline monthly revenue ─────────────────
-  // Lead volume bands
-  const leadsMap = { 1:15, 2:50, 3:112, 4:200 };
-  // Lead-to-consult conversion rate (the score value maps back to a rate midpoint)
-  const convMap  = { 10:0.07, 35:0.17, 65:0.37, 100:0.55 };
-  // LTV bands → estimated per-visit avg treatment value (≈ LTV × 0.35, assuming ~3 avg visits)
-  const txMap    = { 15:120, 40:350, 70:875, 100:1925 };
+// ── Original Compound Effect Chart ──────────────────────────────────────
+function renderCompoundChart(s) {
+  const d = getCompoundDefaults();
 
-  const leads  = leadsMap[Number(state.answers.monthly_leads)]  || 50;
-  const conv   = convMap [Number(state.answers.lead_to_consult)] || 0.10;
-  const avgTx  = txMap   [Number(state.answers.client_ltv)]     || 350;
-  // Consult-to-treatment close rate — high in medspa (patient is already there)
-  const closeR = 0.78;
-  const baseRev = Math.round(leads * conv * closeR * avgTx);
+  const sliderSpec = [
+    { id: 'compoundLeads', label: 'Monthly leads', min: 10, max: 300, step: 5, value: d.leads, format: v => `${v}/mo` },
+    { id: 'compoundBooking', label: 'Lead → booked consult', min: 5, max: 85, step: 5, value: d.bookingRate, format: v => `${v}%` },
+    { id: 'compoundNoShow', label: 'No-show / late cancel', min: 0, max: 40, step: 5, value: d.noShowRate, format: v => `${v}%` },
+    { id: 'compoundClose', label: 'Close rate', min: 5, max: 95, step: 5, value: d.closeRate, format: v => `${v}%` },
+    { id: 'compoundAvgSpend', label: 'Average expenditure', min: 0, max: 100, step: 1, value: spendToSlider(d.avgSpend), format: v => `$${sliderToSpend(Number(v)).toLocaleString()}`, rangeMinLabel: '$100', rangeMaxLabel: '$10k' },
+    { id: 'compoundVisits', label: 'Visits per client', min: 1, max: 12, step: 1, value: d.avgVisits, format: v => `${v} ${Number(v) === 1 ? 'visit' : 'visits'}` },
+  ];
 
-  // ── Quarterly revenue projections ──────────────────────────────────────────
-  // Model: each lever improves linearly from 0% gain at Today to X% gain at Year End.
-  // Revenue at quarter q = baseRev × (1 + gain × q/4)^4  (4 levers compounding)
-  // Conservative: +20% per lever by Year End → 1.20^4 = 2.07× (+107%)
-  // Aggressive:   +50% per lever by Year End → 1.50^4 = 5.06× (+406% ≈ 400%)
-  function proj(gain, q) {
-    return Math.round(baseRev * Math.pow(1 + gain * (q / 4), 4));
-  }
-  const bData = [0,1,2,3,4].map(() => baseRev);
-  const cData = [0,1,2,3,4].map(q => proj(0.20, q));
-  const aData = [0,1,2,3,4].map(q => proj(0.50, q));
+  const controls = sliderSpec.map(s => `
+    <div class="compound-control">
+      <div class="compound-control-head">
+        <span class="compound-name">${s.label}</span>
+        <span class="compound-value" id="${s.id}Val">${s.format(s.value)}</span>
+      </div>
+      <input type="range" class="dynamic-slider" id="${s.id}" min="${s.min}" max="${s.max}" step="${s.step}" value="${s.value}" oninput="updateCompoundModel()" />
+      <div class="slider-range"><span>${s.rangeMinLabel || s.format(s.min)}</span><span>${s.rangeMaxLabel || s.format(s.max)}</span></div>
+    </div>
+  `).join('');
 
-  // ── Chart geometry ──────────────────────────────────────────────────────────
-  const ml=56, pw=400, ph=165, yBot=185;
-  const yMax = Math.max(aData[4], 1);
-  function px(q)   { return ml + (q/4)*pw; }
-  function py(val) { return yBot - (val/yMax)*ph; }
-  const fmt = n => n >= 1000000 ? '$' + (n/1000000).toFixed(1) + 'M'
-                 : n >= 1000    ? '$' + Math.round(n/1000) + 'K'
-                 : '$' + n;
-  const pct = (a, b) => b > 0 ? '+' + Math.round((a/b - 1)*100) + '%' : '';
-
-  // ── Y-axis gridlines (5 lines at 0 → yMax) ─────────────────────────────────
-  const gridLines = [0, 0.25, 0.5, 0.75, 1.0].map(f => {
-    const v = Math.round(yMax * f);
-    const y = py(v);
-    return `<line x1="${ml}" y1="${y}" x2="${ml+pw}" y2="${y}" stroke="#e5e2dd" stroke-width="1"/>
-    <text x="${ml-6}" y="${y+4}" font-size="9" font-family="Arial,sans-serif" fill="#9ca3af" text-anchor="end">${fmt(v)}</text>`;
-  }).join('');
-
-  const xLabels = ['Today','Q1','Q2','Q3','Year End'].map((lbl,i) =>
-    `<text x="${px(i)}" y="${yBot+18}" font-size="10" font-family="Arial,sans-serif" fill="#9ca3af" text-anchor="middle">${lbl}</text>`
-  ).join('');
-
-  const makeLine = (data, color, dash) => {
-    const pts  = data.map((v,i) => `${px(i)},${py(v)}`).join(' ');
-    const dots = data.map((v,i) => `<circle cx="${px(i)}" cy="${py(v)}" r="3.5" fill="${color}"/>`).join('');
-    const da   = dash ? `stroke-dasharray="${dash}"` : '';
-    return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5"
-      stroke-linejoin="round" stroke-linecap="round" ${da}/>${dots}`;
-  };
-
-  const legend = [
-    { color:'#d1d5db', dashed:true,  label:'Today\'s pace',               val:`${fmt(baseRev)}/mo` },
-    { color:'#f97316', dashed:false, label:'+20% on each lever (realistic)', val:`${fmt(cData[4])}/mo  (${pct(cData[4],baseRev)})` },
-    { color:'#22c55e', dashed:false, label:'+50% on each lever (full systems)', val:`${fmt(aData[4])}/mo  (${pct(aData[4],baseRev)})` },
-  ].map(s =>
-    `<div class="lc-legend-item">
-      <div class="lc-swatch" style="background:${s.color};${s.dashed?'opacity:0.45':''}"></div>
-      <span>${s.label} <strong>→ ${s.val}</strong></span>
-    </div>`
-  ).join('');
-
-  const context = `<p style="font-size:11px;color:var(--muted);margin:4px 0 10px;text-align:center;opacity:0.8">
-    Your baseline: ~${leads} leads/mo · ${Math.round(conv*100)}% conversion · ${fmt(avgTx)} avg treatment = ${fmt(baseRev)}/mo
-  </p>`;
-
-  return `<div class="line-chart">
-    <div class="bc-title">${chart.title}</div>
-    ${context}
-    <svg viewBox="0 0 480 213" style="width:100%;height:auto;display:block;overflow:visible">
-      ${gridLines}
-      ${makeLine(bData, '#d1d5db', '6 4')}
-      ${makeLine(cData, '#f97316', '')}
-      ${makeLine(aData, '#22c55e', '')}
-      ${xLabels}
-    </svg>
-    <div class="lc-legend">${legend}</div>
+  return `<div class="step">
+    <div class="insight-card">
+      <div class="insight-eyebrow">${s.eyebrow}</div>
+      <div class="insight-stat ${!s.stat ? 'is-empty' : ''}">${s.stat || ''}</div>
+      <p class="insight-body">${s.body}</p>
+    </div>
+    <div class="line-chart-wrapper" style="border-top: none; margin-top: 0; padding-top: 0;">
+      <div class="line-chart">
+        <div class="compound-controls">
+          <div class="compound-grid">${controls}</div>
+          <div class="compound-control" style="grid-column:1/-1;background:rgba(44,74,62,0.1)">
+            <div class="compound-control-head">
+              <span class="compound-name">Estimated client lifetime value</span>
+              <span class="compound-value" id="compoundLtvReadout">$${Number(d.estimatedLtv).toLocaleString()}</span>
+            </div>
+            <div class="compound-note">Calculated automatically as average expenditure × average visits per client.</div>
+          </div>
+        </div>
+        <div class="compound-compare">
+          <div class="compound-compare-head">
+            <div class="compound-compare-delta" id="compoundDeltaBadge">+$0 more each month</div>
+          </div>
+          
+          <div class="compound-bars">
+            <div class="target-revenue-line" id="targetRevenueLine">
+               <div class="target-revenue-label">Your Goal</div>
+            </div>
+            <div class="compound-bar-col">
+              <div class="compound-bar-value" id="compoundBarCurrentValue">$0</div>
+              <div class="compound-bar-shell">
+                <div class="compound-bar current" id="compoundBarCurrent"></div>
+              </div>
+              <div class="compound-bar-label">Baseline</div>
+            </div>
+            <div class="compound-bar-col">
+              <div class="compound-bar-value" id="compoundBarProjectedValue">$0</div>
+              <div class="compound-bar-shell">
+                <div class="compound-baseline-marker" id="compoundMonthMarker"></div>
+                <div class="compound-bar projected" id="compoundBarProjected"></div>
+              </div>
+              <div class="compound-bar-label">Improved</div>
+            </div>
+          </div>
+          
+          <div class="annual-impact-card">
+            <div class="annual-impact-label">12-Month Projected Value</div>
+            <div class="annual-impact-value" id="compoundBarYearValue">$0</div>
+            <div class="annual-impact-sub">Total revenue from these newly acquired clients over 1 year</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top: 24px;" onclick="advance(this)">Continue &rarr;</button>
   </div>`;
+}
+
+function updateCompoundModel() {
+  if (!document.getElementById('compoundLeads')) return;
+
+  const val = id => Number(document.getElementById(id).value);
+  const leads = val('compoundLeads');
+  const bookingRate = val('compoundBooking');
+  const noShowRate = val('compoundNoShow');
+  const closeRate = val('compoundClose');
+  const avgSpend = sliderToSpend(val('compoundAvgSpend'));
+  const avgVisits = val('compoundVisits');
+  const estimatedLtv = avgSpend * avgVisits;
+
+  document.getElementById('compoundLeadsVal').textContent = `${leads}/mo`;
+  document.getElementById('compoundBookingVal').textContent = `${bookingRate}%`;
+  document.getElementById('compoundNoShowVal').textContent = `${noShowRate}%`;
+  document.getElementById('compoundCloseVal').textContent = `${closeRate}%`;
+  document.getElementById('compoundAvgSpendVal').textContent = `$${avgSpend.toLocaleString()}`;
+  document.getElementById('compoundVisitsVal').textContent = `${avgVisits} ${avgVisits === 1 ? 'visit' : 'visits'}`;
+  document.getElementById('compoundLtvReadout').textContent = `$${estimatedLtv.toLocaleString()}`;
+
+  const d = getCompoundDefaults();
+  
+  const userBaseline = sliderToRev(state.answers['current_revenue'] || 40) * 1000;
+  const userTarget   = sliderToRev(state.answers['target_revenue'] || 70) * 1000;
+
+  const baselineMonthlyRevenue = computeMonthlyRevenue(d.leads, d.bookingRate, d.noShowRate, d.closeRate, d.avgSpend);
+  const projectedMonthlyRevenue = computeMonthlyRevenue(leads, bookingRate, noShowRate, closeRate, avgSpend);
+  const projectedMonthlyLifetime = computeMonthlyLifetimeRevenue(leads, bookingRate, noShowRate, closeRate, estimatedLtv);
+  
+  const projectedYearClientValue = projectedMonthlyLifetime * 12;
+  const monthlyDelta = projectedMonthlyRevenue - baselineMonthlyRevenue;
+
+  const currentVal = Math.max(0, baselineMonthlyRevenue);
+  const monthVal = Math.max(0, projectedMonthlyRevenue);
+  
+  const maxVal = Math.max(currentVal, monthVal, userTarget, 1000);
+
+  const toPct = v => Math.max(2, (v / maxVal) * 100);
+  const baselinePct = toPct(currentVal);
+  const monthPct = toPct(monthVal);
+  const targetPct = toPct(userTarget);
+
+  document.getElementById('compoundBarCurrent').style.height = `${baselinePct}%`;
+  document.getElementById('compoundBarProjected').style.height = `${monthPct}%`;
+  
+  document.getElementById('targetRevenueLine').style.bottom = `${targetPct}%`;
+  document.getElementById('compoundMonthMarker').style.bottom = `${baselinePct}%`;
+
+  const money = compactMoney;
+  animateValue('compoundBarCurrentValue', currentVal, money);
+  animateValue('compoundBarProjectedValue', monthVal, money);
+  animateValue('compoundBarYearValue', projectedYearClientValue, money);
+
+  animateValue('compoundDeltaBadge', Math.abs(monthlyDelta), v => `${monthlyDelta >= 0 ? '+' : '-'}${money(v)} each month`);
 }
 
 function renderBarChart(chart) {
@@ -1233,32 +1771,15 @@ function renderBarChart(chart) {
 }
 
 function renderLoading(s) {
-  const icon = s.icon === 'bars' ? iconBars() : iconScan();
+  const icon = iconScan();
   return `<div class="step loading-step">
     <div class="loading-icon">${icon}</div>
-    <h2 class="loading-title">${s.title}</h2>
-    <p class="loading-sub">${s.sub}</p>
+    <h2 class="loading-title">Building your custom roadmap</h2>
+    <p class="loading-sub" id="loadingText">Analyzing your data...</p>
     <div class="loading-track">
       <div class="loading-fill" id="loadingFill"></div>
     </div>
   </div>`;
-}
-
-function iconBars() {
-  return `<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="8"  y="44" width="16" height="28" rx="4" fill="#a8d5c2">
-      <animate attributeName="height" values="28;18;28" dur="1.6s" repeatCount="indefinite"/>
-      <animate attributeName="y"      values="44;54;44" dur="1.6s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="32" y="28" width="16" height="44" rx="4" fill="var(--primary)">
-      <animate attributeName="height" values="44;54;44" dur="1.6s" begin="0.25s" repeatCount="indefinite"/>
-      <animate attributeName="y"      values="28;18;28" dur="1.6s" begin="0.25s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="56" y="14" width="16" height="58" rx="4" fill="var(--accent)">
-      <animate attributeName="height" values="58;46;58" dur="1.6s" begin="0.5s" repeatCount="indefinite"/>
-      <animate attributeName="y"      values="14;26;14" dur="1.6s" begin="0.5s" repeatCount="indefinite"/>
-    </rect>
-  </svg>`;
 }
 
 function iconScan() {
@@ -1333,7 +1854,9 @@ function renderResults() {
     <div class="cta-box">
       <h3>Ready to fix your biggest leak, ${esc(name)}?</h3>
       <p>${ctaByBottleneck[bottleneck]||ctaByBottleneck['all']}</p>
-      <a href="#" class="btn btn-accent">Book a Free Strategy Call &rarr;</a>
+      <div class="btn-wrap-center">
+        <a href="#" class="btn btn-accent">Book a Free Strategy Call &rarr;</a>
+      </div>
     </div>
     <p class="privacy-note">
       Results sent to ${esc(state.email)}
@@ -1349,71 +1872,175 @@ function renderResults() {
 function afterRender() {
   const s = STEPS[state.step];
 
-  if (s.type === 'insight' && s.chart && !s.dynamic) {
-    // Animate static bars in staggered sequence
-    const MAX_H = 88; // px — available bar height
+  if (s.type === 'insight' && s.chart && !s.chartType) {
+    const MAX_H = 88; 
     setTimeout(() => {
       document.querySelectorAll('.bc-col').forEach((col, i) => {
         setTimeout(() => {
           const pct = parseFloat(col.dataset.pct);
           const h   = Math.round(MAX_H * pct / 100);
-          col.querySelector('.bc-fill').style.height = h + 'px';
-          col.querySelector('.bc-val').style.opacity = '1';
+          const fill = col.querySelector('.bc-fill');
+          if (fill) fill.style.height = h + 'px';
+          const val = col.querySelector('.bc-val');
+          if (val) val.style.opacity = '1';
         }, i * 100);
       });
     }, 120);
   }
 
-  if (s.type === 'insight' && s.dynamic) {
-    // Initialize dynamic chart with default $200/lead
-    setTimeout(() => updateDynChart(200), 120);
-  }
+  if (s.chartType === 'leaked_leads') setTimeout(() => updateLeakedLeadChart(30), 120);
+  if (s.chartType === 'cpl_math') setTimeout(() => updateCPLChart(10), 120);
+  if (s.chartType === 'compound') setTimeout(() => updateCompoundModel(), 120);
 
   if (s.type === 'loading') {
     const fill = document.getElementById('loadingFill');
-    if (!fill) return;
-    const dur = s.duration || 2500;
-    // Start fill animation
+    const text = document.getElementById('loadingText');
+    if (!fill || !text) return;
+    
+    // Slowed down to 8.5 seconds for maximum perceived value building
+    const dur = 8500; 
+    
+    const targetRev = Math.round(sliderToRev(state.answers['target_revenue'] || 70));
+    const teamSizeVal = state.answers['team_size'] || 1;
+    const teamSizes = {1: 'solo', 2: 'small', 3: 'growing', 4: 'large'};
+    const teamType = teamSizes[teamSizeVal];
+    
+    let primaryService = "treatment";
+    if (state.answers.services && state.answers.services.length > 0) {
+      const sMap = { 'injectables': 'Injectables', 'laser': 'Laser & Light', 'body': 'Body Contouring', 'weightloss': 'Weight Loss', 'iv': 'IV Therapy', 'hormone': 'Hormone Therapy' };
+      primaryService = sMap[state.answers.services[0]] || "treatment";
+    }
+
+    const phrases = [
+      `Analyzing your ${primaryService} margins...`,
+      "Calculating the true cost of your leaked leads...",
+      `Mapping retention loops for your ${teamType} team...`,
+      `Plotting your path to $${targetRev}k/mo...`,
+      "Finalizing your personalized Growth Score..."
+    ];
+    
+    let phraseIndex = 0;
+    text.textContent = phrases[0];
+    
+    const interval = setInterval(() => {
+      phraseIndex++;
+      if (phraseIndex < phrases.length) {
+        text.style.opacity = 0;
+        setTimeout(() => {
+          text.textContent = phrases[phraseIndex];
+          text.style.opacity = 1;
+        }, 400); // smooth text fade
+      } else {
+        clearInterval(interval);
+      }
+    }, Math.floor(dur / phrases.length));
+
     requestAnimationFrame(() => {
       fill.style.transition = `width ${dur}ms linear`;
       fill.style.width = '100%';
     });
-    // Auto-advance when done
-    setTimeout(advance, dur + 150);
+    
+    setTimeout(() => {
+        clearInterval(interval);
+        advance(null, true);
+    }, dur + 150);
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  EVENTS
 // ─────────────────────────────────────────────────────────────────────────────
+function handleRangeInputFromElement(el) {
+  if (!el) return;
+  const id = el.dataset.questionId || '';
+  const inputType = el.dataset.inputType || '';
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  
+  let rawValue = Number(el.value);
+  let stateValue = rawValue;
+  let displayValue = rawValue;
+
+  if (inputType === 'range-nonlinear-spend') {
+     stateValue = sliderToSpend(rawValue);
+     displayValue = stateValue;
+  }
+  
+  if (inputType === 'range-nonlinear-rev') {
+     stateValue = sliderToRev(rawValue);
+     displayValue = stateValue;
+  }
+
+  state.answers[id] = stateValue;
+
+  const readout = document.getElementById('questionSliderValue');
+  if (readout) {
+    if (inputType === 'range-nonlinear-rev') {
+       readout.textContent = `${prefix}${Math.round(displayValue).toLocaleString()}k / mo`;
+    } else if (id === 'avg_visits_per_client') {
+      readout.textContent = `${displayValue} ${displayValue === 1 ? 'visit' : 'visits'}`;
+    } else if (prefix) {
+      readout.textContent = `${prefix}${displayValue.toLocaleString()}`;
+    } else if (suffix) {
+      readout.textContent = `${displayValue}${suffix}`;
+    } else {
+      readout.textContent = String(displayValue);
+    }
+  }
+
+  const btn = document.getElementById('continueBtn');
+  if (btn) btn.disabled = false;
+}
+
+let optionTimeout = null;
+
 function bindEvents() {
   const s = STEPS[state.step];
-  if (s.type !== 'question') return;
+  if (s.type !== 'question' || s.inputType) return;
 
-  document.querySelectorAll('.option').forEach(el => {
+  document.querySelectorAll('.option, .icon-option').forEach(el => {
     el.addEventListener('click', () => {
       const val = el.dataset.value;
+      
       if (s.multi) {
         let cur = state.answers[s.id];
         if (!Array.isArray(cur)) cur = [];
         cur = cur.includes(val) ? cur.filter(v=>v!==val) : [...cur,val];
         state.answers[s.id] = cur;
-        document.querySelectorAll('.option').forEach(o =>
+        
+        document.querySelectorAll('.option, .icon-option').forEach(o =>
           o.classList.toggle('selected', cur.includes(o.dataset.value)));
+          
         const btn = document.getElementById('continueBtn');
         if (btn) btn.disabled = cur.length === 0;
       } else {
         const parsed = isNaN(Number(val)) ? val : Number(val);
         state.answers[s.id] = parsed;
-        document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        
+        document.querySelectorAll('.option, .icon-option').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
-        setTimeout(advance, 290);
+        
+        if (optionTimeout) clearTimeout(optionTimeout);
+        optionTimeout = setTimeout(advance, 350);
       }
     });
   });
 }
 
-function advance() {
+function advance(btnElement, force = false) {
+  if (btnElement && btnElement.tagName === 'BUTTON') {
+      btnElement.disabled = true;
+  }
+
+  const current = STEPS[state.step];
+  
+  if (current && current.type === 'question' && current.inputType && (state.answers[current.id] === undefined || state.answers[current.id] === '')) {
+    state.answers[current.id] = current.defaultValue !== undefined ? current.defaultValue : current.min;
+    // ensure mapped logic runs if they hit continue without sliding
+    if (current.inputType === 'range-nonlinear-spend') state.answers[current.id] = sliderToSpend(current.defaultValue);
+    if (current.inputType === 'range-nonlinear-rev') state.answers[current.id] = sliderToRev(current.defaultValue);
+  }
+  
   if (state.step < STEPS.length - 1) {
     state.step++;
     render();
@@ -1427,20 +2054,6 @@ function syncBtn() {
 }
 
 function submitLead() {
-  // ── Integration point ──────────────────────────────────────────────────
-  // POST to your CRM, Zapier webhook, Mailchimp, etc.:
-  //
-  // fetch('https://hooks.zapier.com/hooks/catch/YOUR_HOOK', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({
-  //     firstName: state.firstName,
-  //     email:     state.email,
-  //     answers:   state.answers,
-  //     scores:    computeScores(),
-  //   }),
-  // });
-  // ─────────────────────────────────────────────────────────────────────
   advance();
 }
 
@@ -1459,7 +2072,6 @@ function esc(str) {
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 render();
 </script>
 </body>

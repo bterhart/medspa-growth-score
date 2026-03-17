@@ -1,2 +1,6 @@
 {
+    "extensions.supportVirtualWorkspaces": {
+    "ritwickdey.liveserver": true
+}
+
 }

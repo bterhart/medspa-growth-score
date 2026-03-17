@@ -831,7 +831,7 @@ function animateValue(id, endValue, formatFn, duration = 600) {
   window.requestAnimationFrame(step);
 }
 
-// Custom Revenue Math (Non-Linear for $10k to $300k scale)
+// Custom Revenue Math (Non-Linear for $10k to $300k+ scale)
 function sliderToRev(s) {
   s = Number(s);
   if (s <= 20) return 10 + (s * 1); // 0-20 -> 10k to 30k
@@ -1107,18 +1107,10 @@ const STEPS = [
   },
   {
     type: 'insight',
+    chartType: 'noshow_math',
     eyebrow: 'The Cost of No-Shows',
-    stat: 'Massive',
-    body: 'A single missed appointment costs you roughly <strong>$[VAL]</strong> in lost revenue based on your average treatment value. Automated reminder systems can cut no-show rates from 21% down to 7%.',
-    chart: {
-      title: 'Annual revenue lost to no-shows — 50 appointments/month at your avg value',
-      bars: [
-        { label: '5% no-show',  pct: 14,  val: 'Low',  color: '#eab308' },
-        { label: '15% no-show', pct: 43,  val: 'Med', color: '#f97316' },
-        { label: '25% no-show', pct: 71,  val: 'High', color: '#ef4444' },
-        { label: '35% no-show', pct: 100, val: 'Critical', color: '#991b1b', highlight: true },
-      ],
-    },
+    stat: '', // Dynamic
+    body: 'Based on your exact <strong>average client spend</strong>, a single missed appointment burns real revenue. Automated reminder systems can cut no-show rates from 25% down to 5%. See the annual impact below.'
   },
   {
     type: 'interstitial',
@@ -1190,7 +1182,7 @@ const STEPS = [
   },
 
 { type: 'email_gate' },
-{ type: 'loading', duration: 8500 },
+{ type: 'loading', duration: 12000 },
 { type: 'results' }
 ];
 
@@ -1430,31 +1422,87 @@ function renderQuestion(s) {
 }
 
 function renderInsight(s) {
+  if (s.chartType === 'noshow_math') return renderNoShowChart(s);
   if (s.chartType === 'leaked_leads') return renderLeakedLeadChart(s);
   if (s.chartType === 'cpl_math') return renderCPLChart(s);
   if (s.chartType === 'compound') return renderCompoundChart(s);
-  
-  // Replace dynamic tokens in body
-  let parsedBody = s.body;
-  if (parsedBody && parsedBody.includes('[VAL]')) {
-      const avg = state.answers.avg_expenditure || 1500;
-      parsedBody = parsedBody.replace('[VAL]', avg.toLocaleString());
-  }
   
   const chartHtml = s.chart ? renderBarChart(s.chart) : '';
   return `<div class="step">
     <div class="insight-card">
       <div class="insight-eyebrow">${s.eyebrow}</div>
       <div class="insight-stat ${!s.stat ? 'is-empty' : ''}">${s.stat || ''}</div>
-      <p class="insight-body">${parsedBody}</p>
+      <p class="insight-body">${s.body}</p>
       ${chartHtml}
     </div>
     <button class="btn btn-primary btn-full" onclick="advance(this)">Continue &rarr;</button>
   </div>`;
 }
 
+// ── NEW: Cost of No Shows Dynamic Chart ──────────────────────────────────────
+function renderNoShowChart(s) {
+  return `
+    <div class="step">
+      <div class="line-chart-wrapper" style="border-top: none; margin-top: 0; padding-top: 0;">
+        <div class="line-chart">
+          <div class="insight-left" style="background: var(--insight-bg); border: 1px solid var(--insight-border); border-left: 4px solid var(--primary); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="insight-eyebrow">${s.eyebrow}</div>
+              <div class="insight-stat" id="nsStat">$0</div>
+              <p class="insight-body">${s.body}</p>
+            </div>
+            <div class="dynamic-input-wrap" style="margin-top: 24px; background: rgba(44,74,62,0.04);">
+              <label class="dynamic-label">Appointments per month: <strong id="nsDisplay">50</strong></label>
+              <input type="range" class="dynamic-slider" id="nsSlider" min="10" max="500" step="5" value="50" oninput="updateNoShowChart(this.value)"/>
+              <div class="slider-range"><span>10</span><span>500</span></div>
+            </div>
+          </div>
+          <div class="compound-compare" style="background: #fff;">
+            <div class="compound-compare-head">
+              <div class="compound-compare-delta" style="background: #fee2e2; color: #991b1b; box-shadow: none;">Annual Revenue Lost to No-Shows</div>
+            </div>
+            <div class="compound-bars">
+              ${[5, 15, 25, 35].map((rate, i) => `
+              <div class="compound-bar-col" style="width: 22%;">
+                <div class="compound-bar-value" id="nsVal${i}" style="color: #ef4444">$0</div>
+                <div class="compound-bar-shell" style="border-bottom: 2px solid #ef4444;">
+                  <div class="compound-bar bad" id="nsBar${i}" style="border-radius: 6px 6px 0 0;"></div>
+                </div>
+                <div class="compound-bar-label">${rate}%</div>
+                <div class="compound-bar-sub">Rate</div>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" style="margin-top: 24px;" onclick="advance(this)">Continue &rarr;</button>
+    </div>
+  `;
+}
+
+function updateNoShowChart(appts) {
+  appts = Number(appts);
+  document.getElementById('nsDisplay').textContent = appts;
+  
+  const avgSpend = state.answers.avg_expenditure || 1500;
+  const rates = [0.05, 0.15, 0.25, 0.35];
+  const losses = rates.map(r => Math.round(appts * r * avgSpend * 12));
+  const maxLoss = losses[3]; // 35% is always max loss
+  
+  animateValue('nsStat', avgSpend, v => '$' + Math.round(v).toLocaleString() + ' avg spend');
+  
+  losses.forEach((loss, i) => {
+    const pct = Math.max(2, (loss / maxLoss) * 100);
+    document.getElementById(`nsBar${i}`).style.height = `${pct}%`;
+    animateValue(`nsVal${i}`, loss, compactMoney);
+  });
+}
+
 // ── NEW: Real Cost of Leaked Leads Chart ──────────────────────────────────────
 function renderLeakedLeadChart(s) {
+  const leadsMax = state.answers.monthly_leads || 150;
+  const defaultLeaked = Math.round(leadsMax * 0.5);
+
   return `
     <div class="step">
       <div class="line-chart-wrapper" style="border-top: none; margin-top: 0; padding-top: 0;">
@@ -1466,9 +1514,9 @@ function renderLeakedLeadChart(s) {
               <p class="insight-body">${s.body}</p>
             </div>
             <div class="dynamic-input-wrap" style="margin-top: 24px; background: rgba(44,74,62,0.04);">
-              <label class="dynamic-label">Leaked Leads per month: <strong id="llDisplay">30</strong></label>
-              <input type="range" class="dynamic-slider" id="llSlider" min="5" max="100" step="5" value="30" oninput="updateLeakedLeadChart(this.value)"/>
-              <div class="slider-range"><span>5</span><span>100</span></div>
+              <label class="dynamic-label">Leaked Leads per month: <strong id="llDisplay">${defaultLeaked}</strong></label>
+              <input type="range" class="dynamic-slider" id="llSlider" min="1" max="${leadsMax}" step="1" value="${defaultLeaked}" oninput="updateLeakedLeadChart(this.value)"/>
+              <div class="slider-range"><span>1</span><span>${leadsMax} (Total Leads)</span></div>
             </div>
           </div>
           <div class="compound-compare" style="background: #fff;">
@@ -1722,8 +1770,9 @@ function updateCompoundModel() {
 
   const d = getCompoundDefaults();
   
-  const userBaseline = sliderToRev(state.answers['current_revenue'] || 40) * 1000;
-  const userTarget   = sliderToRev(state.answers['target_revenue'] || 70) * 1000;
+  // They are already stored as actual numbers (e.g. 170) from handleRangeInput
+  const userBaseline = (state.answers['current_revenue'] || 86) * 1000;
+  const userTarget   = (state.answers['target_revenue'] || 170) * 1000;
 
   const baselineMonthlyRevenue = computeMonthlyRevenue(d.leads, d.bookingRate, d.noShowRate, d.closeRate, d.avgSpend);
   const projectedMonthlyRevenue = computeMonthlyRevenue(leads, bookingRate, noShowRate, closeRate, avgSpend);
@@ -1887,8 +1936,9 @@ function afterRender() {
       });
     }, 120);
   }
-
-  if (s.chartType === 'leaked_leads') setTimeout(() => updateLeakedLeadChart(30), 120);
+  
+  if (s.chartType === 'noshow_math') setTimeout(() => updateNoShowChart(state.answers.monthly_leads ? state.answers.monthly_leads * 0.4 : 20), 120);
+  if (s.chartType === 'leaked_leads') setTimeout(() => updateLeakedLeadChart(state.answers.monthly_leads ? state.answers.monthly_leads * 0.5 : 25), 120);
   if (s.chartType === 'cpl_math') setTimeout(() => updateCPLChart(10), 120);
   if (s.chartType === 'compound') setTimeout(() => updateCompoundModel(), 120);
 
@@ -1897,18 +1947,24 @@ function afterRender() {
     const text = document.getElementById('loadingText');
     if (!fill || !text) return;
     
-    // Slowed down to 8.5 seconds for maximum perceived value building
-    const dur = 8500; 
+    // Slowed down to 12 seconds for maximum perceived value building
+    const dur = 12000; 
     
-    const targetRev = Math.round(sliderToRev(state.answers['target_revenue'] || 70));
+    const targetRev = Math.round(state.answers['target_revenue'] || 170);
     const teamSizeVal = state.answers['team_size'] || 1;
     const teamSizes = {1: 'solo', 2: 'small', 3: 'growing', 4: 'large'};
     const teamType = teamSizes[teamSizeVal];
     
+    // Explicitly parse selected services to build Custom loading string
     let primaryService = "treatment";
     if (state.answers.services && state.answers.services.length > 0) {
       const sMap = { 'injectables': 'Injectables', 'laser': 'Laser & Light', 'body': 'Body Contouring', 'weightloss': 'Weight Loss', 'iv': 'IV Therapy', 'hormone': 'Hormone Therapy' };
-      primaryService = sMap[state.answers.services[0]] || "treatment";
+      const selectedNames = state.answers.services.map(val => sMap[val]).filter(Boolean);
+      if (selectedNames.length > 1) {
+          primaryService = selectedNames.slice(0, 2).join(' & ');
+      } else {
+          primaryService = selectedNames[0];
+      }
     }
 
     const phrases = [
@@ -1992,15 +2048,17 @@ function handleRangeInputFromElement(el) {
   if (btn) btn.disabled = false;
 }
 
-let optionTimeout = null;
+let isAdvancing = false;
 
 function bindEvents() {
   const s = STEPS[state.step];
   if (s.type !== 'question' || s.inputType) return;
 
   document.querySelectorAll('.option, .icon-option').forEach(el => {
-    el.addEventListener('click', () => {
-      const val = el.dataset.value;
+    el.addEventListener('click', function() {
+      if (isAdvancing) return;
+      
+      const val = this.dataset.value;
       
       if (s.multi) {
         let cur = state.answers[s.id];
@@ -2018,10 +2076,10 @@ function bindEvents() {
         state.answers[s.id] = parsed;
         
         document.querySelectorAll('.option, .icon-option').forEach(o => o.classList.remove('selected'));
-        el.classList.add('selected');
+        this.classList.add('selected');
         
-        if (optionTimeout) clearTimeout(optionTimeout);
-        optionTimeout = setTimeout(advance, 350);
+        isAdvancing = true; 
+        setTimeout(() => { advance(null, true); }, 350);
       }
     });
   });
@@ -2031,6 +2089,9 @@ function advance(btnElement, force = false) {
   if (btnElement && btnElement.tagName === 'BUTTON') {
       btnElement.disabled = true;
   }
+  
+  if (isAdvancing && !force) return;
+  isAdvancing = true;
 
   const current = STEPS[state.step];
   
@@ -2046,6 +2107,8 @@ function advance(btnElement, force = false) {
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  
+  setTimeout(() => { isAdvancing = false; }, 300);
 }
 
 function syncBtn() {
